@@ -8,6 +8,8 @@ import styles from '../styles/Home.module.css';
 const translations = {
   ru: {
     login: 'Вход',
+    loginWithGoogle: 'Войти с Google',
+    logout: 'Выйти',
     register: 'Регистрация',
     mainTitle: 'Добро пожаловать в будущее',
     mainSubtitle: 'Создавайте удивительные проекты с современными технологиями. Откройте для себя новые возможности веб-разработки.',
@@ -16,6 +18,8 @@ const translations = {
   },
   en: {
     login: 'Login',
+    loginWithGoogle: 'Login with Google',
+    logout: 'Logout',
     register: 'Sign Up',
     mainTitle: 'Welcome to the Future',
     mainSubtitle: 'Create amazing projects with modern technologies. Discover new possibilities in web development.',
@@ -25,12 +29,15 @@ const translations = {
   es: {
     login: 'Iniciar sesión',
     register: 'Registrarse',
+    loginWithGoogle: 'Iniciar sesión con Google',
+    logout: 'Cerrar sesión',
     mainTitle: 'Bienvenido al Futuro',
     mainSubtitle: 'Crea proyectos increíbles con tecnologías modernas. Descubre nuevas posibilidades en el desarrollo web.',
     getStarted: 'Comenzar',
     learnMore: 'Saber más'
   }
 };
+
 
 export default function Home() {
   const [currentLanguage, setCurrentLanguage] = useState('ru');

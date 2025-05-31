@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import styles from '../styles/Home.module.css';
 
 const Header = ({ currentLanguage, onLanguageChange, translations }) => {
+  const { data: session } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -13,43 +15,35 @@ const Header = ({ currentLanguage, onLanguageChange, translations }) => {
 
   const currentLang = languages.find(lang => lang.code === currentLanguage);
 
-  // Закрытие выпадающего меню при клике вне его
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  const handleLanguageChange = (langCode, display) => {
+  const handleLanguageChange = (langCode) => {
     onLanguageChange(langCode);
     setIsDropdownOpen(false);
   };
 
-  const handleLogin = () => {
-    alert(translations[currentLanguage].login);
-  };
-
-  const handleRegister = () => {
-    alert(translations[currentLanguage].register);
-  };
+  const t = translations[currentLanguage];
 
   return (
     <header className={styles.header}>
       <a href="#" className={styles.logo}>
         Logit
       </a>
-      
+
       <div className={styles.navControls}>
-        {/* Селектор языка */}
+        {/* Языковой переключатель */}
         <div className={styles.languageSelector} ref={dropdownRef}>
-          <div 
+          <div
             className={styles.languageBtn}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
@@ -61,7 +55,7 @@ const Header = ({ currentLanguage, onLanguageChange, translations }) => {
               <div
                 key={lang.code}
                 className={styles.languageOption}
-                onClick={() => handleLanguageChange(lang.code, lang.display)}
+                onClick={() => handleLanguageChange(lang.code)}
               >
                 {lang.flag} {lang.name}
               </div>
@@ -69,20 +63,26 @@ const Header = ({ currentLanguage, onLanguageChange, translations }) => {
           </div>
         </div>
 
-        {/* Кнопки авторизации */}
+        {/* Авторизация */}
         <div className={styles.authButtons}>
-          <button 
-            className={`${styles.btn} ${styles.btnSecondary}`}
-            onClick={handleLogin}
-          >
-            {translations[currentLanguage].login}
-          </button>
-          <button 
-            className={`${styles.btn} ${styles.btnPrimary}`}
-            onClick={handleRegister}
-          >
-            {translations[currentLanguage].register}
-          </button>
+          {session ? (
+            <>
+              <span className={styles.userName}>{session.user.name}</span>
+              <button
+                className={`${styles.btn} ${styles.btnSecondary}`}
+                onClick={() => signOut()}
+              >
+                {t.logout || 'Выйти'}
+              </button>
+            </>
+          ) : (
+            <button
+              className={`${styles.btn} ${styles.btnPrimary}`}
+              onClick={() => signIn('google')}
+            >
+              {t.loginWithGoogle || 'Войти с Google'}
+            </button>
+          )}
         </div>
       </div>
     </header>
