@@ -1,0 +1,41 @@
+# node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# next.js
+.next/
+out/
+.vercel/
+dist/
+
+# dotenv
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# logs
+logs
+*.log
+
+# Mac auto-generated .DS_Store files
+.DS_STORE
+.vscode
+Readme.txt
+README.md
+
+# Webstorm project metadata
+.idea/
