@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>NextStar - Главная страница</title>
+        <title>Logit - Главная страница</title>
         <meta name="description" content="Современная веб-разработка с Next.js" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

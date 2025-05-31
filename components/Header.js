@@ -8,7 +8,7 @@ const Header = ({ currentLanguage, onLanguageChange, translations }) => {
   const languages = [
     { code: 'ru', flag: '🇷🇺', name: 'Русский', display: '🇷🇺 RU' },
     { code: 'en', flag: '🇺🇸', name: 'English', display: '🇺🇸 EN' },
-    { code: 'es', flag: '🇪🇸', name: 'Español', display: '🇪🇸 ES' }
+    // { code: 'es', flag: '🇪🇸', name: 'Español', display: '🇪🇸 ES' }
   ];
 
   const currentLang = languages.find(lang => lang.code === currentLanguage);
@@ -43,7 +43,7 @@ const Header = ({ currentLanguage, onLanguageChange, translations }) => {
   return (
     <header className={styles.header}>
       <a href="#" className={styles.logo}>
-        NextStar
+        Logit
       </a>
       
       <div className={styles.navControls}>
