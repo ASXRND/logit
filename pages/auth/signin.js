@@ -19,8 +19,8 @@ export default function SignIn({ providers }) {
               </svg>
             </div>
             <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">Вход в LogIt</h1>
-            <p className="text-gray-500 text-center text-base mb-2">Личный рабочий журнал менеджера</p>
-            <p className="text-gray-400 text-center text-sm">Авторизация через Google, GitHub, почту и др.</p>
+            <p className="text-gray-500 text-center text-base mb-2">Журнал</p>
+            <p className="text-gray-400 text-center text-sm">Авторизация через Google.</p>
           </div>
           <div className="w-full flex flex-col gap-4 mt-4">
             {providers && Object.values(providers).length > 0 ? (

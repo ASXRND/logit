@@ -17,11 +17,13 @@ export const authOptions = {
     signIn: "/auth/signin",
     error: "/auth/error",
   },
+  
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Всегда редиректим на главную после успешного входа
-      return baseUrl
+      // перенаправляем всегда на /dashboard после входа
+    return baseUrl + '/dashboard';
     },
+
     async session({ session, token }) {
       if (token?.id) {
         session.user.id = token.id;
