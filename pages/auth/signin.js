@@ -28,7 +28,7 @@ export default function SignIn({ providers }) {
                 <button
                   key={provider.name}
                   className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl font-semibold text-lg shadow hover:from-blue-600 hover:to-blue-800 transition"
-                  onClick={() => signIn(provider.id)}
+                  onClick={() => signIn(provider.id, { callbackUrl: '/' })}
                 >
                   <span className="inline-block align-middle">
                     {provider.name === "Google" && (

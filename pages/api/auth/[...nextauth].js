@@ -11,12 +11,17 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
     signIn: "/auth/signin",
     error: "/auth/error",
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Всегда редиректим на главную после успешного входа
+      return baseUrl
+    },
     async session({ session, token }) {
       if (token?.id) {
         session.user.id = token.id;
@@ -30,6 +35,7 @@ export const authOptions = {
       return token;
     },
   },
+  debug: false, // Временно включаем для отладки
 };
 
 export default NextAuth(authOptions);
