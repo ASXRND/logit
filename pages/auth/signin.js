@@ -1,7 +1,11 @@
 import { getProviders, signIn } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function SignIn({ providers }) {
+  const router = useRouter();
+  const { callbackUrl = "/" } = router.query;
+
   return (
     <>
       <Head>
@@ -19,8 +23,8 @@ export default function SignIn({ providers }) {
               </svg>
             </div>
             <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">Вход в LogIt</h1>
-            <p className="text-gray-500 text-center text-base mb-2">Журнал</p>
-            <p className="text-gray-400 text-center text-sm">Авторизация через Google.</p>
+            <p className="text-gray-500 text-center text-base mb-2">Личный рабочий журнал менеджера</p>
+            <p className="text-gray-400 text-center text-sm">Авторизация через Google, GitHub, почту и др.</p>
           </div>
           <div className="w-full flex flex-col gap-4 mt-4">
             {providers && Object.values(providers).length > 0 ? (
@@ -28,7 +32,7 @@ export default function SignIn({ providers }) {
                 <button
                   key={provider.name}
                   className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl font-semibold text-lg shadow hover:from-blue-600 hover:to-blue-800 transition"
-                  onClick={() => signIn(provider.id, { callbackUrl: '/' })}
+                  onClick={() => signIn(provider.id, { callbackUrl })}
                 >
                   <span className="inline-block align-middle">
                     {provider.name === "Google" && (
