@@ -74,31 +74,33 @@ export default function DashboardPage() {
       setCurrentPage(1);
       loadNotes(1);
     } else {
-      loadNotes(currentPage); // Перезагружаем текущую страницу
+      loadNotes(currentPage);
     }
   };
 
   const deleteNote = async (id) => {
-    try {
-      const res = await fetch(`/api/notes?id=${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Ошибка при удалении заметки');
-      }
-      
-      setNotes(prev => prev.filter(note => note.id !== id));
-      if (filteredNotes.length <= 1 && currentPage > 1) {
-        loadNotes(currentPage - 1);
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'Не удалось удалить заметку');
+  try {
+    console.log('Deleting note with id:', id);
+    const res = await fetch(`/api/notes?id=${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log('Server error:', errorData);
     }
-  };
+    // Всегда обновляем состояние и перезагружаем список
+    setNotes(prev => prev.filter(note => note.id !== id));
+    if (filteredNotes.length <= 1 && currentPage > 1) {
+      loadNotes(currentPage - 1);
+    } else {
+      loadNotes(currentPage);
+    }
+  } catch (err) {
+    console.error('Delete error:', err);
+    setError(err.message || 'Не удалось удалить заметку');
+  }
+};
 
   const updateNote = async (id, newText) => {
     try {
@@ -169,20 +171,20 @@ export default function DashboardPage() {
         <NoteEditor onNoteAdded={addNote} onError={setError} />
 
         {isLoading ? (
-          <div className="flex justify-center mt-8">
-            <p>Загрузка заметок...</p>
+          <div className="flex justify-center mt-4">
+            <p>Загрузка данных...</p>
           </div>
         ) : (
           <>
             <NoteList 
               notes={filteredNotes} 
               onDelete={deleteNote}
-              onUpdate={updateNote}
-              emptyMessage="Заметок не найдено"
+              onError={setError}
+              emptyMessage=""
             />
             
             {totalPages > 1 && (
-              <div className="mt-6 flex justify-center gap-2">
+              <div className="mt-4">
                 <button
                   onClick={() => loadNotes(currentPage - 1)}
                   disabled={currentPage === 1}

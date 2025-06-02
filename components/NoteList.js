@@ -1,31 +1,36 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-export default function NoteList({ notes, onNotesUpdated }) {
+export default function NoteList({ notes, onDelete, onError, emptyMessage }) {
   const [deletingId, setDeletingId] = useState(null);
   const { data: session } = useSession();
 
   const handleDelete = async (id) => {
     if (!session) return;
-    
+
     setDeletingId(id);
     try {
-      const response = await fetch(`/api/notes/${id}`, {
+      const response = await fetch(`/api/notes?id=${id}`, { // Исправлен URL
         method: 'DELETE',
+        credentials: 'include',
       });
 
-      if (response.ok) {
-        onNotesUpdated(id);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка при удалении заметки');
       }
+
+      onDelete(id);
     } catch (error) {
       console.error('Error deleting note:', error);
+      onError(error.message);
     } finally {
       setDeletingId(null);
     }
   };
 
-  if (notes.length === 0) {
-    return <p className="text-white/70">Заметок пока нет</p>;
+  if (!notes || notes.length === 0) {
+    return <p className="text-white/70">{emptyMessage}</p>;
   }
 
   return (

@@ -67,24 +67,22 @@ export default async function handler(req, res) {
       }
 
       case 'DELETE': {
-        const { id } = req.query;
-
-        if (!id) {
-          return res.status(400).json({ error: 'ID is required' });
-        }
-
-        const result = db.prepare(`
-          DELETE FROM notes 
-          WHERE id = ? AND user_email = ?
-        `).run(parseInt(id), userEmail);
-
-        if (result.changes === 0) {
-          return res.status(404).json({ error: 'Заметка не найдена или не принадлежит пользователю' });
-        }
-
-        return res.status(200).json({ message: 'Заметка удалена' });
-      }
-
+  const { id } = req.query;
+  if (!id) {
+    return res.status(400).json({ error: 'ID is required' });
+  }
+  console.log('Deleting note with id:', id, 'for user:', userEmail);
+  const result = db.prepare(`
+    DELETE FROM notes 
+    WHERE id = ? AND user_email = ?
+  `).run(parseInt(id), userEmail);
+  console.log('Delete result:', result);
+  if (result.changes === 0) {
+    console.log('No changes for id:', id, 'user:', userEmail);
+    return res.status(404).json({ error: 'Заметка не найдена или не принадлежит пользователю' });
+  }
+  return res.status(200).json({ message: 'Заметка удалена' });
+}
       default:
         return res.status(405).json({ error: 'Method not allowed' });
     }
