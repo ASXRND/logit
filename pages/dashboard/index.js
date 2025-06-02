@@ -68,37 +68,27 @@ export default function DashboardPage() {
     return () => handleSearch.cancel();
   }, [searchTerm, notes, handleSearch]);
 
-  const addNote = async (text) => {
-    try {
-      const res = await fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ text }),
-      });
-      
-      if (!res.ok) throw new Error('Ошибка при сохранении заметки');
-      
-      const data = await res.json();
-      setNotes(prev => [data.note, ...prev]);
-      if (currentPage !== 1) {
-        setCurrentPage(1);
-        loadNotes(1);
-      }
-    } catch (err) {
-      console.error(err);
-      setError('Не удалось сохранить заметку');
+  const addNote = async (note) => {
+    setNotes(prev => [note, ...prev]);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+      loadNotes(1);
+    } else {
+      loadNotes(currentPage); // Перезагружаем текущую страницу
     }
   };
 
   const deleteNote = async (id) => {
     try {
-      const res = await fetch(`/api/notes/${id}`, {
+      const res = await fetch(`/api/notes?id=${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
       
-      if (!res.ok) throw new Error('Ошибка при удалении заметки');
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Ошибка при удалении заметки');
+      }
       
       setNotes(prev => prev.filter(note => note.id !== id));
       if (filteredNotes.length <= 1 && currentPage > 1) {
@@ -106,7 +96,7 @@ export default function DashboardPage() {
       }
     } catch (err) {
       console.error(err);
-      setError('Не удалось удалить заметку');
+      setError(err.message || 'Не удалось удалить заметку');
     }
   };
 
@@ -176,7 +166,7 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        <NoteEditor onSave={addNote} />
+        <NoteEditor onNoteAdded={addNote} onError={setError} />
 
         {isLoading ? (
           <div className="flex justify-center mt-8">

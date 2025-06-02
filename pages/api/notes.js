@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from './auth/[...nextauth]'; // <-- путь относительно notes.js
+import { authOptions } from './auth/[...nextauth]';
 
 const db = new Database('notes.db');
 
@@ -25,21 +25,30 @@ export default async function handler(req, res) {
   try {
     switch (req.method) {
       case 'GET': {
+        const { page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
         const userNotes = db.prepare(`
           SELECT id, text, created_at 
           FROM notes 
           WHERE user_email = ? 
           ORDER BY created_at DESC
-        `).all(userEmail);
+          LIMIT ? OFFSET ?
+        `).all(userEmail, parseInt(limit), parseInt(offset));
 
-        return res.status(200).json({ notes: userNotes });
+        const totalCount = db.prepare(`
+          SELECT COUNT(*) as count 
+          FROM notes 
+          WHERE user_email = ?
+        `).get(userEmail).count;
+
+        return res.status(200).json({ notes: userNotes, totalCount });
       }
 
       case 'POST': {
         const { text } = req.body;
 
-        if (!text || text.trim() === '') {
-          return res.status(400).json({ error: 'Text is required' });
+        if (typeof text !== 'string' || !text || text.trim() === '') {
+          return res.status(400).json({ error: 'Text must be a non-empty string' });
         }
 
         const result = db.prepare(`
@@ -55,6 +64,25 @@ export default async function handler(req, res) {
         };
 
         return res.status(201).json({ note: newNote });
+      }
+
+      case 'DELETE': {
+        const { id } = req.query;
+
+        if (!id) {
+          return res.status(400).json({ error: 'ID is required' });
+        }
+
+        const result = db.prepare(`
+          DELETE FROM notes 
+          WHERE id = ? AND user_email = ?
+        `).run(parseInt(id), userEmail);
+
+        if (result.changes === 0) {
+          return res.status(404).json({ error: 'Заметка не найдена или не принадлежит пользователю' });
+        }
+
+        return res.status(200).json({ message: 'Заметка удалена' });
       }
 
       default:

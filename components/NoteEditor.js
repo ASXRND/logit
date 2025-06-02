@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-export default function NoteEditor({ onNoteAdded }) {
+export default function NoteEditor({ onNoteAdded, onError }) {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
@@ -21,13 +21,18 @@ export default function NoteEditor({ onNoteAdded }) {
         body: JSON.stringify({ text }),
       });
 
-      if (response.ok) {
-        const newNote = await response.json();
-        onSave(newNote.note);
-        setText('');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка при сохранении заметки');
       }
+
+      const newNote = await response.json();
+      console.log('Server response:', newNote); // Для отладки
+      onNoteAdded(newNote.note);
+      setText('');
     } catch (error) {
       console.error('Error saving note:', error);
+      onError(error.message || 'Не удалось сохранить заметку');
     } finally {
       setIsLoading(false);
     }
