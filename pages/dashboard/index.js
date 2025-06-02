@@ -154,7 +154,7 @@ export default function DashboardPage() {
 
       {/* Основной контент */}
       <main className="flex-1 p-4 md:p-8 bg-gradient-to-br from-[#0f0f1f] to-[#050510] overflow-auto">
-        <h1 className="ml-8 md:ml-0 text-2xl md:text-3xl mb-6 font-bold">Мои заметки</h1>
+        <h1 className="ml-8 md:ml-0 text-xl md:text-xl mb-6">Мои заметки</h1>
         {error && (
           <div className="mb-4 p-3 bg-red-500/20 text-red-300 rounded text-sm">
             {error}
