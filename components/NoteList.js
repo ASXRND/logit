@@ -10,7 +10,7 @@ export default function NoteList({ notes, onDelete, onError, emptyMessage }) {
 
     setDeletingId(id);
     try {
-      const response = await fetch(`/api/notes?id=${id}`, { // Исправлен URL
+      const response = await fetch(`/api/notes?id=${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -30,7 +30,7 @@ export default function NoteList({ notes, onDelete, onError, emptyMessage }) {
   };
 
   if (!notes || notes.length === 0) {
-    return <p className="text-white/70">{emptyMessage}</p>;
+    return <p className="text-white/70 text-sm">{emptyMessage}</p>;
   }
 
   return (
@@ -38,10 +38,10 @@ export default function NoteList({ notes, onDelete, onError, emptyMessage }) {
       {notes.map((note) => (
         <li
           key={note.id}
-          className="p-4 bg-white/10 rounded shadow flex justify-between items-start"
+          className="p-4 bg-white/10 rounded shadow flex flex-col sm:flex-row sm:items-start gap-2"
         >
           <div className="flex-1">
-            <p className="text-white">{note.text}</p>
+            <p className="text-white text-sm break-words">{note.text}</p>
             <p className="text-xs text-white/50 mt-1">
               {new Date(note.created_at).toLocaleString()}
             </p>
@@ -49,7 +49,7 @@ export default function NoteList({ notes, onDelete, onError, emptyMessage }) {
           <button
             onClick={() => handleDelete(note.id)}
             disabled={deletingId === note.id}
-            className={`ml-4 text-sm ${deletingId === note.id ? 'text-red-200' : 'text-red-400 hover:text-red-600'}`}
+            className={`text-sm ${deletingId === note.id ? 'text-red-200' : 'text-red-400 hover:text-red-600'} sm:ml-4 w-full sm:w-auto text-left`}
           >
             {deletingId === note.id ? 'Удаляем...' : 'Удалить'}
           </button>
